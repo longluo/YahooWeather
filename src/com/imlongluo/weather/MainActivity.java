@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity implements YahooWeatherInfoListener,
         YahooWeatherExceptionListener {
+    private static final String TAG = "YahooWeather";
 
     private ImageView mIvWeather0;
     private TextView mTvWeather0;

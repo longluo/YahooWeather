@@ -9,10 +9,13 @@ import android.location.LocationManager;
 import android.os.Bundle;
 
 class UserLocationUtils {
+    private static final String TAG = UserLocationUtils.class.getSimpleName();
 
     Timer timer1;
+
     LocationManager lm;
     LocationResult locationResult;
+
     boolean gps_enabled = false;
     boolean network_enabled = false;
 
@@ -22,14 +25,18 @@ class UserLocationUtils {
      */
     public boolean findUserLocation(Context context, LocationResult result) {
         locationResult = result;
-        if (lm == null)
+
+        if (lm == null) {
             lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        }
 
         // exceptions will be thrown if provider is not permitted.
         try {
             gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
         } catch (Exception ex) {
+
         }
+
         try {
             network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
         } catch (Exception ex) {
@@ -39,11 +46,15 @@ class UserLocationUtils {
         if (!gps_enabled && !network_enabled)
             return false;
 
-        if (gps_enabled)
+        if (gps_enabled) {
             lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListenerGps);
-        if (network_enabled)
+        }
+
+        if (network_enabled) {
             lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,
                     locationListenerNetwork);
+        }
+
         timer1 = new Timer();
         timer1.schedule(new GetLastLocation(), 20000);
         return true;
@@ -92,17 +103,22 @@ class UserLocationUtils {
             lm.removeUpdates(locationListenerNetwork);
 
             Location net_loc = null, gps_loc = null;
-            if (gps_enabled)
+            if (gps_enabled) {
                 gps_loc = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if (network_enabled)
+            }
+
+            if (network_enabled) {
                 net_loc = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            }
 
             // if there are both values use the latest one
             if (gps_loc != null && net_loc != null) {
-                if (gps_loc.getTime() > net_loc.getTime())
+                if (gps_loc.getTime() > net_loc.getTime()) {
                     locationResult.gotLocation(gps_loc);
-                else
+                } else {
                     locationResult.gotLocation(net_loc);
+                }
+
                 return;
             }
 
@@ -110,10 +126,12 @@ class UserLocationUtils {
                 locationResult.gotLocation(gps_loc);
                 return;
             }
+
             if (net_loc != null) {
                 locationResult.gotLocation(net_loc);
                 return;
             }
+
             locationResult.gotLocation(null);
         }
     }
