@@ -202,12 +202,16 @@ public class YahooWeather implements LocationResult {
      *            A {@link WeatherInfo} instance
      */
     public void queryYahooWeatherByGPS(final Context context, final YahooWeatherInfoListener result) {
-        YahooWeatherLog.d("query yahoo weather by gps");
+        YahooWeatherLog.d("query yahoo weather by gps, result=" + result);
+        
         if (!NetworkUtils.isConnected(context)) {
-            if (mExceptionListener != null)
+            if (mExceptionListener != null) {
                 mExceptionListener.onFailConnection(new Exception("Network is not avaiable"));
+            }
+            
             return;
         }
+        
         mContext = context;
         mWeatherInfoResult = result;
         (new UserLocationUtils()).findUserLocation(context, this);
@@ -215,6 +219,8 @@ public class YahooWeather implements LocationResult {
 
     @Override
     public void gotLocation(Location location) {
+    		YahooWeatherLog.d("gotLocation, location=" + location + ", lat=" + location.getLatitude() 
+    						+ ",lon=" + location.getLongitude());
         if (location == null) {
             if (mExceptionListener != null)
                 mExceptionListener.onFailFindLocation(new Exception("Location cannot be found"));

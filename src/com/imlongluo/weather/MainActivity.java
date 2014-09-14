@@ -6,11 +6,13 @@ import com.imlongluo.weather.apis.YahooWeather;
 import com.imlongluo.weather.apis.YahooWeather.SEARCH_MODE;
 import com.imlongluo.weather.apis.YahooWeatherExceptionListener;
 import com.imlongluo.weather.apis.YahooWeatherInfoListener;
+import com.imlongluo.weather.apis.YahooWeatherLog;
+import com.imlongluo.weather.R;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.util.Log;
 import android.view.Menu;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.text.TextUtils;
@@ -34,6 +36,7 @@ public class MainActivity extends Activity implements YahooWeatherInfoListener,
     private EditText mEtAreaOfCity;
     private Button mBtSearch;
     private Button mBtGPS;
+    private Button mBtnBaiduLBS;
     private LinearLayout mWeatherInfosLayout;
 
     private YahooWeather mYahooWeather = YahooWeather.getInstance(5000, 5000, true);
@@ -44,6 +47,8 @@ public class MainActivity extends Activity implements YahooWeatherInfoListener,
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+        YahooWeatherLog.d("onCreate");
 
         mYahooWeather.setExceptionListener(this);
 
@@ -82,13 +87,49 @@ public class MainActivity extends Activity implements YahooWeatherInfoListener,
                 showProgressDialog();
             }
         });
+        
+        mBtnBaiduLBS = (Button) findViewById(R.id.baidu_lbs_button);
+        mBtnBaiduLBS.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Log.d(TAG, "");
+                searchByGPS();
+                showProgressDialog();
+			}
+		});
 
         mWeatherInfosLayout = (LinearLayout) findViewById(R.id.weather_infos);
 
         searchByGPS();
     }
-
+    
     @Override
+	protected void onPause() {
+		super.onPause();
+	}
+
+	@Override
+	protected void onRestart() {
+		super.onRestart();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+	}
+
+	@Override
     protected void onDestroy() {
         hideProgressDialog();
         mProgressDialog = null;
@@ -176,6 +217,8 @@ public class MainActivity extends Activity implements YahooWeatherInfoListener,
     }
 
     private void searchByGPS() {
+    		YahooWeatherLog.d("searchByGPS");
+    		
         mYahooWeather.setNeedDownloadIcons(true);
         mYahooWeather.setSearchMode(SEARCH_MODE.GPS);
         mYahooWeather.queryYahooWeatherByGPS(getApplicationContext(), this);

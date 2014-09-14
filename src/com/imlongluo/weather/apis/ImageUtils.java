@@ -10,6 +10,8 @@ import android.graphics.BitmapFactory;
 
 class ImageUtils {
 	public static Bitmap getBitmapFromWeb(String src) {
+		YahooWeatherLog.d("getBitmapFromWeb, src=" + src);
+		
         try {
             URL url = new URL(src);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();

@@ -39,6 +39,22 @@ class WOEIDUtils {
     private static final String WOEID_QUERY_PREFIX_FIND_BY_GPS = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20geo.placefinder%20where%20text%3D%22";
     private static final String WOEID_QUERY_CONSECTION_FIND_BY_GPS = "%2C";
     private static final String WOEID_QUERY_SUFFIX_FIND_BY_GPS = "%22%20and%20gflags%3D%22R%22";
+    
+    /*
+    RSS Weather
+    http://weather.yahooapis.com/forecastrss?w=2161853
+    
+    JSON 
+    http://query.yahooapis.com/v1/public/yql?q=select*from%20geo.places%20where%20text=%22shanghai%22&format=json
+    XML
+    http://query.yahooapis.com/v1/public/yql?q=select*from%20geo.places%20where%20text=%22shanghai%22&format=xml
+    
+    GPS
+    http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20geo.placefinder%20where%20text%3D%2222.574088%2C113.865428%22%20and%20gflags%3D%22R%22
+    
+    GPS JSON 
+    http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20geo.placefinder%20where%20text%3D%2222.574088%2C113.865428%22%20and%20gflags%3D%22R%22&format=json
+     */
 
     private static WOEIDUtils mInstance = new WOEIDUtils();
 
@@ -64,6 +80,8 @@ class WOEIDUtils {
             Object o = it.next();
             res += (o + " = " + mParsedResult.get(o)) + "\n";
         }
+        
+        YahooWeatherLog.d("getWOEIDlocation, res=" + res);
         return res;
     }
 
@@ -80,14 +98,13 @@ class WOEIDUtils {
     }
 
     private String queryWOEIDfromYahooAPIs(Context context, String uriPlace) {
-        YahooWeatherLog.d("Query WOEID by name of place");
+        YahooWeatherLog.d("Query WOEID by name of place: place=" + uriPlace);
 
         yahooAPIsQuery = WOEID_QUERY_PREFIX_FIND_BY_PLACE + "%22" + uriPlace + "%22"
                 + WOEID_QUERY_SUFFIX_FORMAT;
-
+        YahooWeatherLog.d("Before:yahooAPIsQuery=" + yahooAPIsQuery);
         yahooAPIsQuery = yahooAPIsQuery.replace(" ", "%20");
-
-        YahooWeatherLog.d("Query WOEID: " + yahooAPIsQuery);
+        YahooWeatherLog.d("After:yahooAPIsQuery=" + yahooAPIsQuery);
 
         String woeidString = fetchWOEIDxmlString(context, yahooAPIsQuery);
         Document woeidDoc = convertStringToDocument(context, woeidString);
@@ -103,7 +120,7 @@ class WOEIDUtils {
     }
 
     private String queryWOEIDfromYahooAPIs(Context context, String lat, String lon) {
-        YahooWeatherLog.d("Query WOEID by latlon");
+        YahooWeatherLog.d("Query WOEID by latlon: lat=" + lat + ",lon=" + lon);
 
         yahooAPIsQuery = WOEID_QUERY_PREFIX_FIND_BY_GPS + lat + WOEID_QUERY_CONSECTION_FIND_BY_GPS
                 + lon + WOEID_QUERY_SUFFIX_FIND_BY_GPS;
@@ -125,7 +142,7 @@ class WOEIDUtils {
     }
 
     private String fetchWOEIDxmlString(Context context, String queryString) {
-        YahooWeatherLog.d("fetch WOEID xml string");
+        YahooWeatherLog.d("fetch WOEID xml string, queryString=" + queryString);
         String qResult = "";
 
         HttpClient httpClient = NetworkUtils.createHttpClient();
@@ -175,7 +192,7 @@ class WOEIDUtils {
     }
 
     private Document convertStringToDocument(Context context, String src) {
-        YahooWeatherLog.d("convert string to document");
+        YahooWeatherLog.d("convert string to document, src=" + src);
         Document dest = null;
 
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -202,7 +219,7 @@ class WOEIDUtils {
     }
 
     private void parseWOEID(Document srcDoc) {
-        YahooWeatherLog.d("parse WOEID");
+        YahooWeatherLog.d("parse WOEID, srcDoc=" + srcDoc);
 
         mParsedResult = new HashMap<String, String>();
         for (int i = 1; i <= 4; i++) {
