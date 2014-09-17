@@ -1,11 +1,5 @@
 package com.imlongluo.weather;
 
-import java.io.File;
-import java.io.FileOutputStream;
-
-import cn.sharesdk.framework.ShareSDK;
-import cn.sharesdk.onekeyshare.OnekeyShare;
-
 import com.imlongluo.weather.apis.WeatherInfo;
 import com.imlongluo.weather.apis.WeatherInfo.ForecastInfo;
 import com.imlongluo.weather.apis.YahooWeather;
@@ -15,23 +9,17 @@ import com.imlongluo.weather.apis.YahooWeatherInfoListener;
 import com.imlongluo.weather.apis.YahooWeatherLog;
 import com.imlongluo.weather.lbs.LocationActivity;
 import com.imlongluo.weather.settings.SettingsActivity;
+import com.imlongluo.weather.share.ShareActivity;
 import com.imlongluo.weather.R;
 
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.app.Activity;
 import android.util.Log;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.WindowManager;
 import android.app.ProgressDialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -53,7 +41,7 @@ public class MainActivity extends Activity implements YahooWeatherInfoListener,
     private EditText mEtAreaOfCity;
     private Button mBtSearch;
     private Button mBtGPS;
-    private Button mBtnBaiduLBS;
+//    private Button mBtnBaiduLBS;
     private LinearLayout mWeatherInfosLayout;
 
     private YahooWeather mYahooWeather = YahooWeather.getInstance(5000, 5000, true);
@@ -105,7 +93,7 @@ public class MainActivity extends Activity implements YahooWeatherInfoListener,
             }
         });
 
-        mBtnBaiduLBS = (Button) findViewById(R.id.baidu_lbs_button);
+/*        mBtnBaiduLBS = (Button) findViewById(R.id.baidu_lbs_button);
         mBtnBaiduLBS.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -114,7 +102,7 @@ public class MainActivity extends Activity implements YahooWeatherInfoListener,
                 searchByGPS();
                 showProgressDialog();
             }
-        });
+        });*/
 
         mWeatherInfosLayout = (LinearLayout) findViewById(R.id.weather_infos);
 
@@ -155,10 +143,9 @@ public class MainActivity extends Activity implements YahooWeatherInfoListener,
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(Menu.NONE, 1, 1, "地理位置");
-        menu.add(Menu.NONE, 2, 2, "分享");
-        menu.add(Menu.NONE, 3, 3, "分享至朋友圈");
-        menu.add(Menu.NONE, 4, 4, "设置");
+        menu.add(Menu.NONE, 1, 1, "Location");
+        menu.add(Menu.NONE, 2, 2, "Share");
+        menu.add(Menu.NONE, 3, 3, "Settings");
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -171,15 +158,21 @@ public class MainActivity extends Activity implements YahooWeatherInfoListener,
                 break;
 
             case 2:
-                showShare();
+                // showShare();
+                String weatherInfo = mTvWeather0.getText().toString();
+                Intent intent = new Intent();
+                intent.putExtra("weather", weatherInfo);
+                intent.setClass(MainActivity.this, ShareActivity.class);
+                startActivity(intent);
                 break;
+
+            // case 3:
+            // File tempFile = new
+            // File("SDCard/YahooWeather/ScreenImage/Screen1.png");
+            // shareToWechatMoments(tempFile);
+            // break;
 
             case 3:
-                File tempFile = new File("SDCard/YahooWeather/ScreenImage/Screen1.png");
-                shareToWechatMoments(tempFile);
-                break;
-
-            case 4:
                 startActivity(new Intent(MainActivity.this, SettingsActivity.class));
                 break;
 
@@ -204,9 +197,9 @@ public class MainActivity extends Activity implements YahooWeatherInfoListener,
                     + ", " + weatherInfo.getWOEIDCountry());
             mTvWeather0.setText("====== CURRENT ======" + "\n" + "date: "
                     + weatherInfo.getCurrentConditionDate() + "\n" + "weather: "
-                    + weatherInfo.getCurrentText() + "\n" + "temperature in ºC: "
-                    + weatherInfo.getCurrentTempC() + "\n" + "temperature in ºF: "
-                    + weatherInfo.getCurrentTempF() + "\n" + "wind chill in ºF: "
+                    + weatherInfo.getCurrentText() + "\n" + "temperature in 潞C: "
+                    + weatherInfo.getCurrentTempC() + "\n" + "temperature in 潞F: "
+                    + weatherInfo.getCurrentTempF() + "\n" + "wind chill in 潞F: "
                     + weatherInfo.getWindChill() + "\n" + "wind direction: "
                     + weatherInfo.getWindDirection() + "\n" + "wind speed: "
                     + weatherInfo.getWindSpeed() + "\n" + "Humidity: "
@@ -224,10 +217,10 @@ public class MainActivity extends Activity implements YahooWeatherInfoListener,
                 final ForecastInfo forecastInfo = weatherInfo.getForecastInfoList().get(i);
                 tvWeather.setText("====== FORECAST " + (i + 1) + " ======" + "\n" + "date: "
                         + forecastInfo.getForecastDate() + "\n" + "weather: "
-                        + forecastInfo.getForecastText() + "\n" + "low  temperature in ºC: "
-                        + forecastInfo.getForecastTempLowC() + "\n" + "high temperature in ºC: "
-                        + forecastInfo.getForecastTempHighC() + "\n" + "low  temperature in ºF: "
-                        + forecastInfo.getForecastTempLowF() + "\n" + "high temperature in ºF: "
+                        + forecastInfo.getForecastText() + "\n" + "low  temperature in 潞C: "
+                        + forecastInfo.getForecastTempLowC() + "\n" + "high temperature in 潞C: "
+                        + forecastInfo.getForecastTempHighC() + "\n" + "low  temperature in 潞F: "
+                        + forecastInfo.getForecastTempLowF() + "\n" + "high temperature in 潞F: "
                         + forecastInfo.getForecastTempHighF() + "\n");
                 final ImageView ivForecast = (ImageView) forecastInfoLayout
                         .findViewById(R.id.imageview_forecast_info);
@@ -298,128 +291,5 @@ public class MainActivity extends Activity implements YahooWeatherInfoListener,
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.cancel();
         }
-    }
-
-    private void showShare() {
-        String shareString = mTvTitle.getText().toString() + mTvWeather0.getText().toString();
-        String shareTitleString = "YahooWeather By Long Luo";
-
-        YahooWeatherLog.d("showShare, title=" + shareTitleString + ",content=" + shareString);
-
-        ShareSDK.initSDK(this);
-        OnekeyShare oks = new OnekeyShare();
-        // 关闭sso授权
-        oks.disableSSOWhenAuthorize();
-
-        // 分享时Notification的图标和文字
-        oks.setNotification(R.drawable.ic_launcher, getString(R.string.app_name));
-        // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
-
-        // oks.setTitle(getString(R.string.share));
-        oks.setTitle(shareTitleString);
-
-        // titleUrl是标题的网络链接，仅在人人网和QQ空间使用
-        oks.setTitleUrl("http://imlongluo.com");
-
-        // text是分享文本，所有平台都需要这个字段
-        // oks.setText("我是分享文本");
-        oks.setText(shareString);
-
-        // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
-
-        GetAndSaveCurrentScreenImage();
-        // oks.setImagePath("/sdcard/test.jpg");
-        oks.setImagePath("SDCard/YahooWeather/ScreenImage/Screen1.png");
-
-        // url仅在微信（包括好友和朋友圈）中使用
-        oks.setUrl("http://imlongluo.com/weather");
-        
-        // comment是我对这条分享的评论，仅在人人网和QQ空间使用
-        oks.setComment("我是测试评论文本");
-        
-        // site是分享此内容的网站名称，仅在QQ空间使用
-        oks.setSite(getString(R.string.app_name));
-        // siteUrl是分享此内容的网站地址，仅在QQ空间使用
-        oks.setSiteUrl("http://imlongluo.com");
-
-        // 启动分享GUI
-        oks.show(this);
-    }
-
-    private void shareToWechatMoments(File file) {
-        Intent intent = new Intent();
-        ComponentName comp = new ComponentName("com.tencent.mm",
-                "com.tencent.mm.ui.tools.ShareToTimeLineUI");
-        intent.setComponent(comp);
-        intent.setAction("android.intent.action.SEND");
-        intent.setType("image/*");
-        intent.putExtra(Intent.EXTRA_TEXT, "From Yahoo Weather, http://www.imlongluo.com/weather");
-        intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
-        startActivity(intent);
-    }
-
-    /**
-     * 获取和保存当前屏幕的截图
-     */
-    private void GetAndSaveCurrentScreenImage() {
-        // 1.构建Bitmap
-        WindowManager windowManager = getWindowManager();
-        Display display = windowManager.getDefaultDisplay();
-        int w = display.getWidth();
-        int h = display.getHeight();
-
-        Bitmap Bmp = Bitmap.createBitmap(w, h, Config.ARGB_8888);
-
-        // 2.获取屏幕
-        View decorview = this.getWindow().getDecorView();
-        decorview.setDrawingCacheEnabled(true);
-        Bmp = decorview.getDrawingCache();
-
-        String SavePath = getSDCardPath() + "/YahooWeather/ScreenImage";
-
-        // 3.保存Bitmap
-        try {
-            File path = new File(SavePath);
-            // 文件
-            String filepath = SavePath + "/Screen1.png";
-            File file = new File(filepath);
-            if (!path.exists()) {
-                path.mkdirs();
-            }
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-
-            FileOutputStream fos = null;
-            fos = new FileOutputStream(file);
-            if (null != fos) {
-                Bmp.compress(Bitmap.CompressFormat.PNG, 90, fos);
-                fos.flush();
-                fos.close();
-
-                Toast.makeText(MainActivity.this, "截屏文件已保存至SDCard/YahooWeather/ScreenImage/下",
-                        Toast.LENGTH_LONG).show();
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 获取SDCard的目录路径功能
-     * 
-     * @return
-     */
-    private String getSDCardPath() {
-        File sdcardDir = null;
-        // 判断SDCard是否存在
-        boolean sdcardExist = Environment.getExternalStorageState().equals(
-                android.os.Environment.MEDIA_MOUNTED);
-        if (sdcardExist) {
-            sdcardDir = Environment.getExternalStorageDirectory();
-        }
-
-        return sdcardDir.toString();
     }
 }
