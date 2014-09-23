@@ -4,21 +4,25 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.location.LocationClientOption.LocationMode;
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
 import com.imlongluo.weather.R;
 import com.imlongluo.weather.WeatherApplication;
 
-public class LocationActivity extends Activity {
-    private static final String TAG = "LocationActivity";
+public class LocationManagerActivity extends Activity {
+    private static final String TAG = LocationManagerActivity.class.getSimpleName();
 
     private LocationClient mLocationClient;
     private TextView LocationResult, ModeInfor;
@@ -29,10 +33,31 @@ public class LocationActivity extends Activity {
     private String tempcoor = "gcj02";
     private CheckBox checkGeoLocation;
 
+    private EditText mEtAreaOfCity;
+    private Button mBtSearch;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.location);
+
+        mEtAreaOfCity = (EditText) findViewById(R.id.edittext_area);
+
+        mBtSearch = (Button) findViewById(R.id.search_button);
+        mBtSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String _location = mEtAreaOfCity.getText().toString();
+                if (!TextUtils.isEmpty(_location)) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(mEtAreaOfCity.getWindowToken(), 0);
+//                    searchByPlaceName(_location);
+//                    showProgressDialog();
+                } else {
+                    Toast.makeText(getApplicationContext(), "location is not inputted", 1).show();
+                }
+            }
+        });
 
         mLocationClient = ((WeatherApplication) getApplication()).mLocationClient;
 

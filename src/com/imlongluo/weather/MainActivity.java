@@ -7,7 +7,7 @@ import com.imlongluo.weather.apis.YahooWeather.SEARCH_MODE;
 import com.imlongluo.weather.apis.YahooWeatherExceptionListener;
 import com.imlongluo.weather.apis.YahooWeatherInfoListener;
 import com.imlongluo.weather.apis.YahooWeatherLog;
-import com.imlongluo.weather.lbs.LocationActivity;
+import com.imlongluo.weather.lbs.LocationManagerActivity;
 import com.imlongluo.weather.settings.SettingsActivity;
 import com.imlongluo.weather.share.ShareActivity;
 import com.imlongluo.weather.R;
@@ -38,8 +38,8 @@ public class MainActivity extends Activity implements YahooWeatherInfoListener,
     private TextView mTvWeather0;
     private TextView mTvErrorMessage;
     private TextView mTvTitle;
-    private EditText mEtAreaOfCity;
-    private Button mBtSearch;
+//    private EditText mEtAreaOfCity;
+//    private Button mBtSearch;
     private Button mBtGPS;
 //    private Button mBtnBaiduLBS;
     private LinearLayout mWeatherInfosLayout;
@@ -66,7 +66,7 @@ public class MainActivity extends Activity implements YahooWeatherInfoListener,
         mTvErrorMessage = (TextView) findViewById(R.id.textview_error_message);
         mIvWeather0 = (ImageView) findViewById(R.id.imageview_weather_info_0);
 
-        mEtAreaOfCity = (EditText) findViewById(R.id.edittext_area);
+/*        mEtAreaOfCity = (EditText) findViewById(R.id.edittext_area);
 
         mBtSearch = (Button) findViewById(R.id.search_button);
         mBtSearch.setOnClickListener(new View.OnClickListener() {
@@ -82,7 +82,7 @@ public class MainActivity extends Activity implements YahooWeatherInfoListener,
                     Toast.makeText(getApplicationContext(), "location is not inputted", 1).show();
                 }
             }
-        });
+        });*/
 
         mBtGPS = (Button) findViewById(R.id.gps_button);
         mBtGPS.setOnClickListener(new View.OnClickListener() {
@@ -154,7 +154,7 @@ public class MainActivity extends Activity implements YahooWeatherInfoListener,
         YahooWeatherLog.d("onOptionsItemSelected, id=" + item.getItemId());
         switch (item.getItemId()) {
             case 1:
-                startActivity(new Intent(MainActivity.this, LocationActivity.class));
+                startActivity(new Intent(MainActivity.this, LocationManagerActivity.class));
                 break;
 
             case 2:
@@ -189,8 +189,9 @@ public class MainActivity extends Activity implements YahooWeatherInfoListener,
         if (weatherInfo != null) {
             setNormalLayout();
             if (mYahooWeather.getSearchMode() == SEARCH_MODE.GPS) {
-                mEtAreaOfCity.setText("YOUR CURRENT LOCATION");
+//                mEtAreaOfCity.setText("YOUR CURRENT LOCATION");
             }
+
             mWeatherInfosLayout.removeAllViews();
             mTvTitle.setText(weatherInfo.getTitle() + "\n" + weatherInfo.getWOEIDneighborhood()
                     + ", " + weatherInfo.getWOEIDCounty() + ", " + weatherInfo.getWOEIDState()
